@@ -1,4 +1,4 @@
-<mxfile version="13.6.9" type="github" host="app.diagrams.net" modified="2020-09-16T19:00:23.378Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763" etag="M_xeIW9GcrEVvrkJsFFM">
+<mxfile version="13.6.9" type="github" host="app.diagrams.net" modified="2020-09-16T19:04:03.824Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763" etag="AfSmB6exiQUSY4BoQOVs">
   <diagram id="XE45euI3UaWMFM7cNjVr" name="Page-1">
     <mxGraphModel grid="1" dx="1363" dy="749" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -103,6 +103,33 @@
         </mxCell>
         <mxCell id="jTXSWWIvGgRx7QMcHlvk-50" value="&lt;span style=&quot;font: bold 13px / 1.2 &amp;#34;helvetica&amp;#34; ; text-align: center ; color: rgb(0 , 0 , 0) ; text-transform: none ; text-indent: 0px ; letter-spacing: normal ; text-decoration: none ; word-spacing: 0px ; display: inline ; float: none ; overflow-wrap: normal ; background-color: rgb(248 , 249 , 250)&quot;&gt;R2_Trigger&lt;/span&gt;" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1">
           <mxGeometry as="geometry" y="480" x="520" width="120" height="60" />
+        </mxCell>
+        <mxCell id="jTXSWWIvGgRx7QMcHlvk-51" value="Controller_Button" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;strokeColor=#2D7600;fontStyle=1;fillColor=#7AD61D;fontColor=#030303;" vertex="1">
+          <mxGeometry as="geometry" y="110" x="510" width="140" height="60" />
+        </mxCell>
+        <mxCell id="jTXSWWIvGgRx7QMcHlvk-52" value="Base Class" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#030303;" vertex="1">
+          <mxGeometry as="geometry" y="140" x="670" width="90" height="20" />
+        </mxCell>
+        <mxCell id="jTXSWWIvGgRx7QMcHlvk-53" value="Child Class" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#030303;" vertex="1">
+          <mxGeometry as="geometry" y="410" x="670" width="90" height="20" />
+        </mxCell>
+        <mxCell id="jTXSWWIvGgRx7QMcHlvk-54" value="" parent="1" style="endArrow=none;html=1;fontSize=14;fontColor=#030303;strokeWidth=3;" edge="1">
+          <mxGeometry as="geometry" width="50" height="50" relative="1">
+            <mxPoint as="sourcePoint" y="190" x="510" />
+            <mxPoint as="targetPoint" y="190" x="770" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jTXSWWIvGgRx7QMcHlvk-55" value="" parent="1" style="endArrow=none;html=1;fontSize=14;fontColor=#030303;strokeWidth=3;" edge="1">
+          <mxGeometry as="geometry" width="50" height="50" relative="1">
+            <mxPoint as="sourcePoint" y="700" x="510" />
+            <mxPoint as="targetPoint" y="700" x="770" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jTXSWWIvGgRx7QMcHlvk-56" value="" parent="1" style="endArrow=none;html=1;fontSize=14;fontColor=#030303;strokeWidth=3;" edge="1">
+          <mxGeometry as="geometry" width="50" height="50" relative="1">
+            <mxPoint as="sourcePoint" y="90" x="510" />
+            <mxPoint as="targetPoint" y="90" x="770" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
