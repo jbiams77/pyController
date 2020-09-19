@@ -4,7 +4,10 @@ import struct
 import threading
 from enum import IntEnum
 
-
+# TODO: Convert print statements to logging for debugging
+'''    
+  Button Type 1 enumerations
+'''
 class Buttons(IntEnum):
     CROSS = 0
     CIRCLE = 1
@@ -15,23 +18,63 @@ class Buttons(IntEnum):
     SHARE = 8
     OPTIONS = 9
     HOME = 10
+    L3 = 11
+    R3 = 12
+
+'''    
+  Button Type 2 enumerations
+'''
+class Analog(IntEnum):
+    L3_LEFT = 0
+    L3_RIGHT = 1
+    L3_UP = 10
+    L3_DOWN = 11
+    L2 = 20
+    R3_LEFT = 30
+    R3_RIGHT = 31
+    R3_UP = 40
+    R3_DOWN = 41
+    R2 = 50
+    DPAD_LEFT = 60
+    DPAD_RIGHT = 61
+    DPAD_UP = 70
+    DPAD_DOWN = 71
 
 
 class ControllerFeature:
-    def __init__(self, button, callback, pressed=False, analog_raw_value=0.0,
-                 value=0, ramp_up_time=0, ramp_down_time=0,
-                 velocity_max=10):
-        self.button = button
+    """
+    Each controller component is broken into objects, ex. Square, L1, R2
+
+    NOTE: ControllerFeatures must exist in Button OR Analog enumerations
+
+    Args:
+        name(IntEnum): The distinct controller feature, ex. Circle
+        callback(Function): Functor that acts as event callback
+    """
+    def __init__(self, name, callback):
+        self.name = self.is_name_valid(name)
         self.callback = callback
-        self.pressed = pressed
-        self.analog_raw_value = analog_raw_value
-        self.value = value
-        self.ramp_up_time = ramp_up_time
-        self.ramp_down_time = ramp_down_time
-        self.velocity_max = velocity_max
+        self.pressed = False                    # Indicates button is pressed
+        self.value = 0                          # Value of analog feature
+
+    # Verify the name exist in
+    def is_name_valid(self, name):
+        if name in Buttons or name in Analog:
+            return name
+        else:
+            print("{} is not in Buttons or Analog enumeration".format(name))
+            return None
+
 
 
 class ControllerBlueTooth:
+    """
+    Manages BlueTooth connection and unpacks controller dat.
+
+    Args:
+        controller_feature_list(List): List of used controller features
+        interface(String): Bluetooth connection/device node
+    """
     def __init__(self, controller_feature_list, interface='/dev/input/js0'):
         self.interface = interface
         self.bluetooth_connected = False
@@ -39,18 +82,21 @@ class ControllerBlueTooth:
         self.format = "LhBB"
         self.event_size = struct.calcsize(self.format)
         self.bluetooth_stream = None
-        #self.connect()
         self.bluetooth_thread = None
-
         self.type1_mapping = {}
         self.type2_mapping = {}
 
         for feature in controller_feature_list:
-            self.type1_mapping[feature.button] = feature
+            if feature.name in Buttons:
+                # Button features added to type 1 mapping
+                self.type1_mapping[feature.name] = feature
+            else:
+                # Analog features added to type 2 mapping
+                self.type2_mapping[feature.name] = feature
 
 
     def start_thread(self):
-        self.bluetooth_thread = threading.Thread(target=self.read_and_sort, daemon=True)
+        self.bluetooth_thread = threading.Thread(target=self.read_and_unpack, daemon=True)
         self.bluetooth_thread.start()
 
     def connect(self):
@@ -68,11 +114,11 @@ class ControllerBlueTooth:
         self.connect()
         self.start_thread()
         
-    def read_and_sort(self):
+    def read_and_unpack(self):
         self.connect()
         while self.bluetooth_connected:
             self.event = self.read_stream()
-            self.sort_data()
+            self.unpack_data()
             time.sleep(0.1)
     
     def read_stream(self):
@@ -83,7 +129,7 @@ class ControllerBlueTooth:
             exit(1)
 
     # TODO: sort_data will unpack the value, button_type, and button_id into controller feautures
-    def sort_data(self):
+    def unpack_data(self):
         (*tv_sec, value, button_type, button_id) = struct.unpack("LhBB", self.event)
 
         if button_type == 1 and button_id in self.type1_mapping:
@@ -92,5 +138,12 @@ class ControllerBlueTooth:
             else:
                 self.type1_mapping[button_id].pressed = False
             self.type1_mapping[button_id].callback()
+        elif button_type == 2 and button_id in self.type2_mapping:
+            if value > 0:
+                self.type2_mapping[(button_id * 10) + 1].value = value
+                self.type2_mapping[(button_id*10)+1].callback()
+            else:
+                self.type2_mapping[(button_id * 10)].value = value
+                self.type2_mapping[(button_id*10)].callback()
 
-        #print("button_id: {} button_type: {} value: {}\n".format(button_id, button_type, value))
+# print("button_id: {} button_type: {} value: {}\n".format(button_id, button_type, value))
