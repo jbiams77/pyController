@@ -1,14 +1,30 @@
 import pyController.controller as ps4
 import time
 
-interface = "/dev/input/js0"
-L1_Trigger = ps4.ControllerFeature()
-L2_Trigger = ps4.ControllerFeature()
 
-controller_features = [L1_Trigger, L2_Trigger]
+def cross_callback():
+    print("I'm playing a game, and you pressed cross")
+    print(f"pressed: {cross_feature.pressed}")
+
+
+def square_callback():
+    print("I'm playing a game, and you pressed square")
+    print(f"pressed: {square_feature.pressed}")
+
+
+interface = "documents/test.txt"
+cross_feature = ps4.ControllerFeature(ps4.Buttons.CROSS, cross_callback)
+square_feature = ps4.ControllerFeature(ps4.Buttons.SQUARE, square_callback)
+
+controller_features = [cross_feature, square_feature]
 blue_tooth = ps4.ControllerBlueTooth(controller_features, interface)
 blue_tooth.start_thread()
 
-while True:
-    print("main")
-    time.sleep(10)
+def main():
+    while True:
+        print("main")
+        time.sleep(10)
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()

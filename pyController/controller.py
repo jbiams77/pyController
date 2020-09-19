@@ -2,13 +2,27 @@ import time
 import os
 import struct
 import threading
+from enum import IntEnum
+
+
+class Buttons(IntEnum):
+    CROSS = 0
+    CIRCLE = 1
+    TRIANGLE = 2
+    SQUARE = 3
+    L1 = 4
+    R1 = 5
+    SHARE = 8
+    OPTIONS = 9
+    HOME = 10
+
 
 class ControllerFeature:
-
-    def __init__(self, pressed = False, analog_raw_value = 0.0,
-                 value = 0, ramp_up_time = 0, ramp_down_time = 0,
-                 velocity_max = 10
-                 ):
+    def __init__(self, button, callback, pressed=False, analog_raw_value=0.0,
+                 value=0, ramp_up_time=0, ramp_down_time=0,
+                 velocity_max=10):
+        self.button = button
+        self.callback = callback
         self.pressed = pressed
         self.analog_raw_value = analog_raw_value
         self.value = value
@@ -18,7 +32,6 @@ class ControllerFeature:
 
 
 class ControllerBlueTooth:
-
     def __init__(self, controller_feature_list, interface='/dev/input/js0'):
         self.interface = interface
         self.bluetooth_connected = False
@@ -26,8 +39,15 @@ class ControllerBlueTooth:
         self.format = "LhBB"
         self.event_size = struct.calcsize(self.format)
         self.bluetooth_stream = None
-        self.connect()
+        #self.connect()
         self.bluetooth_thread = None
+
+        self.type1_mapping = {}
+        self.type2_mapping = {}
+
+        for feature in controller_feature_list:
+            self.type1_mapping[feature.button] = feature
+
 
     def start_thread(self):
         self.bluetooth_thread = threading.Thread(target=self.read_and_sort, daemon=True)
@@ -49,6 +69,7 @@ class ControllerBlueTooth:
         self.start_thread()
         
     def read_and_sort(self):
+        self.connect()
         while self.bluetooth_connected:
             self.event = self.read_stream()
             self.sort_data()
@@ -64,4 +85,12 @@ class ControllerBlueTooth:
     # TODO: sort_data will unpack the value, button_type, and button_id into controller feautures
     def sort_data(self):
         (*tv_sec, value, button_type, button_id) = struct.unpack("LhBB", self.event)
-        print("button_id: {} button_type: {} value: {}\n".format(button_id, button_type, value))
+
+        if button_type == 1 and button_id in self.type1_mapping:
+            if value is 1:
+                self.type1_mapping[button_id].pressed = True
+            else:
+                self.type1_mapping[button_id].pressed = False
+            self.type1_mapping[button_id].callback()
+
+        #print("button_id: {} button_type: {} value: {}\n".format(button_id, button_type, value))
