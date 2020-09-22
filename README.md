@@ -9,7 +9,12 @@
 
 
 ## Installation
-`INSTALLATION INSTRUCTIONS TO COME`
+From terminal, run update:
+
+`sudo apt-get update`
+
+
+`sudo pip install pyController`
 
 ## Usage
 
