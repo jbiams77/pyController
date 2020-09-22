@@ -1,1 +1,6 @@
-#this will be the main
+from pyController.cli import Cli
+
+
+def main():
+
+    Cli()
