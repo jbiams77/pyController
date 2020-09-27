@@ -14,7 +14,7 @@ From terminal, run update:
 `sudo apt-get update`
 
 
-`sudo pip install pyController`
+`pip3 install pyController`
 
 ## Usage
 
