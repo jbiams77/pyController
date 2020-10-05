@@ -29,12 +29,12 @@ class Analog(IntEnum):
     L3_RIGHT = 1
     L3_UP = 10
     L3_DOWN = 11
-    L2 = 20
+    L2 = 21
     R3_LEFT = 30
     R3_RIGHT = 31
     R3_UP = 40
     R3_DOWN = 41
-    R2 = 50
+    R2 = 51
     DPAD_LEFT = 60
     DPAD_RIGHT = 61
     DPAD_UP = 70
@@ -83,17 +83,16 @@ class ControllerBlueTooth:
         self.event_size = struct.calcsize(self.format)
         self.bluetooth_stream = None
         self.bluetooth_thread = None
-        self.type1_mapping = {}
-        self.type2_mapping = {}
+        self.button_mapping = {}
+        self.analog_mapping = {}
 
         for feature in controller_feature_list:
             if feature.name in Buttons:
                 # Button features added to type 1 mapping
-                self.type1_mapping[feature.name] = feature
+                self.button_mapping[feature.name] = feature
             else:
                 # Analog features added to type 2 mapping
-                self.type2_mapping[feature.name] = feature
-
+                self.analog_mapping[feature.name] = feature
 
     def start_thread(self):
         self.bluetooth_thread = threading.Thread(target=self.read_and_unpack, daemon=True)
@@ -119,7 +118,6 @@ class ControllerBlueTooth:
         while self.bluetooth_connected:
             self.event = self.read_stream()
             self.unpack_data()
-            time.sleep(0.1)
     
     def read_stream(self):
         try:
@@ -132,18 +130,30 @@ class ControllerBlueTooth:
     def unpack_data(self):
         (*tv_sec, value, button_type, button_id) = struct.unpack("LhBB", self.event)
 
-        if button_type == 1 and button_id in self.type1_mapping:
+        if button_type == 1 and button_id in self.button_mapping:
             if value is 1:
-                self.type1_mapping[button_id].pressed = True
+                self.button_mapping[button_id].pressed = True
             else:
-                self.type1_mapping[button_id].pressed = False
-            self.type1_mapping[button_id].callback()
-        elif button_type == 2 and button_id in self.type2_mapping:
-            if value > 0:
-                self.type2_mapping[(button_id * 10) + 1].value = value
-                self.type2_mapping[(button_id*10)+1].callback()
-            else:
-                self.type2_mapping[(button_id * 10)].value = value
-                self.type2_mapping[(button_id*10)].callback()
+                self.button_mapping[button_id].pressed = False
+            self.button_mapping[button_id].callback()
+
+        elif button_type == 2 and (value > 0):
+            if ((button_id * 10) + 1) in self.analog_mapping:
+                self.analog_mapping[(button_id*10)+1].value = value
+                self.analog_mapping[(button_id*10)+1].callback()
+
+        elif button_type == 2 and (value < 0):            
+            if ((button_id * 10)) in self.analog_mapping:
+                self.analog_mapping[(button_id*10)].value = abs(value)
+                self.analog_mapping[(button_id*10)].callback()
+
+        elif button_type == 2 and (value == 0):
+            if ((button_id * 10)+1) in self.analog_mapping:
+                self.analog_mapping[(button_id*10)+1].value = 0
+                self.analog_mapping[(button_id*10)+1].callback()
+            
+            if ((button_id * 10)) in self.analog_mapping:
+                self.analog_mapping[(button_id*10)].value = 0
+                self.analog_mapping[(button_id*10)].callback()
 
 # print("button_id: {} button_type: {} value: {}\n".format(button_id, button_type, value))
