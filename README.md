@@ -2,7 +2,15 @@
 [![PyPI version shields.io](https://img.shields.io/pypi/v/pyPS4Controller.svg)](https://pypi.python.org/pypi/pyPS4Controller/) 
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/pyPS4Controller.svg)](https://pypi.python.org/pypi/pyPS4Controller/)
 ##
+
+# About
+This tool functions as a controller management service that allows anyone to easily integrate a bluetooth wireless PS4 controller with their personal project. While this code only works with a PS4 controller layout, there are future plans to expand this to more bluetooth controller pending popularity. The code has been verified with the following controller but should work with any bluetooth PS4 controller:
+
+https://www.amazon.com/gp/product/B07WDK245R/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
+
+# PS4 Button Layout
 <img src="https://github.com/jbiams77/pyController/blob/master/documents/AcE2c.png?raw=true" width="50%">
+
 
 ## Architecture
 <img src="https://github.com/jbiams77/pyController/blob/master/documents/SoftwareArchitecture.JPG?raw=true" width="60%">
@@ -59,7 +67,7 @@ Creating the controller feature object means calling the contstructor with the e
 `
 Circle_Button   = ps4.ControllerFeature(ps4.Buttons.CIRCLE, Led_Callback)
 `
-##4 Create a  list of the controller features
+## 4 Create a  list of the controller features
 Add the objects to a list that allows the bluetooth manger to connect controller events to user defined callbacks.
 `
 controller_features = [Circle_Button]
