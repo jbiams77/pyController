@@ -19,7 +19,12 @@ From terminal, run update:
 # Implementation
 
 There are three requirements needed to implement the pyController.
-## 1. Define Callbacks
+## 1. Import pyController
+Import the pyController file. Importing it as ps4 will help remember this is strictly for a bluetooth ps4 button mapping.
+
+`import controller as ps4`
+
+## 2. Define Callbacks
 The pyController exists in a thread allowing user code to execute while awaiting a controller command. When a user defined controller feature changes states, it interrupts with a callback. The callback is a functor the user defines. This function is user named and user defined. It will perform the routine that corresponds with the button mapping of the user choice. 
 
 Ex. If the user wanted an LED to turn on when **Circle** is pressed, than the function could be defined as follows:
@@ -31,7 +36,7 @@ def Led_Callback():
    else:
     LED.OFF()
 ```
-## 2. Create the controller feature.
+## 3. Create the controller feature.
 The flexibility of this controller implementation means controller feautres are off by default. An interruption will only occur if the user utilizes a button, joystick, or trigger. This increases the performance of user code by minimizing uneccessary interruptions. A controller feautre is an object initialized by the **ControllerFeauture** class. The feature itself is an enumeration that *must* match the enumeration. These enumerations are hard mapped to the PS4 controller button laytout. 
 | Buttons   |   Analog    |
 |-----------|-------------|
@@ -49,3 +54,25 @@ The flexibility of this controller implementation means controller feautres are 
 |           |  DPAD_RIGHT |
 |           |   DPAD_UP   |
 |           |   DPAD_DOWN |
+
+Creating the controller feature object means calling the contstructor with the enumeration mapped feature and call back function pointer (functor). The following is an example that could be used with the LED function in step 1. 
+`
+Circle_Button   = ps4.ControllerFeature(ps4.Buttons.CIRCLE, Led_Callback)
+`
+##4 Create a  list of the controller features
+Add the objects to a list that allows the bluetooth manger to connect controller events to user defined callbacks.
+`
+controller_features = [Circle_Button]
+`
+
+## 5. Create the bluetooth object
+Make a bluetooth objects that passes the list of user defined controller feature objects for ControllerBlueTooth to manage. 
+`
+blue_tooth = ps4.ControllerBlueTooth(controller_features, interface)
+`
+
+## 6. Start the bluetooth thread
+
+`
+blue_tooth.start_thread()
+`
