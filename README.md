@@ -21,8 +21,11 @@ From terminal, run update:
 
 `sudo apt-get update`
 
-
+For Python 3
 `pip3 install pyController`
+
+For Python 2
+`pip2 install pyController`
 
 # Implementation
 
@@ -44,7 +47,7 @@ def Led_Callback():
    else:
     LED.OFF()
 ```
-## 3. Create the controller feature.
+## 3. Create the controller features
 The flexibility of this controller implementation means controller feautres are off by default. An interruption will only occur if the user utilizes a button, joystick, or trigger. This increases the performance of user code by minimizing uneccessary interruptions. A controller feautre is an object initialized by the **ControllerFeauture** class. The feature itself is an enumeration that *must* match the enumeration. These enumerations are hard mapped to the PS4 controller button laytout. 
 | Buttons   |   Analog    |
 |-----------|-------------|
